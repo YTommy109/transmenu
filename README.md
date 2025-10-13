@@ -72,7 +72,12 @@ pnpm playwright test --ui
 | `pnpm dev` | 開発サーバーを起動 |
 | `pnpm build` | 本番用ビルド |
 | `pnpm start` | 本番サーバーを起動 |
-| `pnpm lint` | ESLintを実行 |
+| `pnpm lint` | Biomeリンターを実行 |
+| `pnpm lint:fix` | Biomeリンターで自動修正 |
+| `pnpm format` | Biomeフォーマッターで自動修正 |
+| `pnpm format:check` | フォーマットチェック |
+| `pnpm check` | Biome統合チェック |
+| `pnpm check:fix` | Biome統合チェックで自動修正 |
 | `pnpm test` | ユニットテストを実行 |
 | `pnpm test:ui` | UIでユニットテストを実行 |
 | `pnpm e2e` | E2Eテストを実行 |
@@ -104,17 +109,19 @@ transmenu/
 このプロジェクトは以下で構成されています：
 
 - ✅ App RouterのNext.js 14
-- ✅ 厳格な設定のTypeScript
+- ✅ 厄格な設定のTypeScript
 - ✅ CSS-in-JSのEmotion
 - ✅ ユニットテスト用のVitest
 - ✅ E2Eテスト用のPlaywright
-- ✅ コードリンティング用のESLint
+- ✅ 高速リンター・フォーマッターBiome
+- ✅ LLM自律コード修正対応ルール
 - ✅ 環境管理用のdevbox
 
 ## 🔧 設定ファイル
 
 - `next.config.mjs` - Next.js設定
 - `tsconfig.json` - TypeScript設定
+- `biome.jsonc` - Biomeリンター・フォーマッター設定
 - `vitest.config.ts` - Vitestテスト設定
 - `playwright.config.ts` - PlaywrightE2Eテスト設定
 - `devbox.json` - 開発環境設定

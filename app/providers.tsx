@@ -1,9 +1,10 @@
 'use client';
 
-import { CacheProvider } from '@emotion/react';
 import createCache from '@emotion/cache';
+import { CacheProvider } from '@emotion/react';
 import { useServerInsertedHTML } from 'next/navigation';
-import React, { useState } from 'react';
+import type React from 'react';
+import { useState } from 'react';
 
 export default function EmotionCacheProvider({
   children,
@@ -43,6 +44,7 @@ export default function EmotionCacheProvider({
       <style
         key={cache.key}
         data-emotion={`${cache.key} ${names.join(' ')}`}
+        // biome-ignore lint/security/noDangerouslySetInnerHtml: Emotion CSS-in-JS requires this for SSR
         dangerouslySetInnerHTML={{
           __html: styles,
         }}

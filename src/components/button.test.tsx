@@ -1,10 +1,10 @@
-import { describe, it, expect, vi } from 'vitest';
-import { render, screen, fireEvent } from '@testing-library/react';
-import { Button } from './Button';
+import { fireEvent, render, screen } from '@testing-library/react';
+import { describe, expect, it, vi } from 'vitest';
+import { Button } from './button';
 
 /**
  * Button コンポーネントのテスト
- * 
+ *
  * Note: 現在このテストファイルはjsdom互換性問題により除外されています
  * 将来的にjsdom環境が修正されたら有効化予定
  */
@@ -18,7 +18,9 @@ describe('Button コンポーネント', () => {
     render(<Button>{buttonText}</Button>);
 
     // Assert
-    expect(screen.getByRole('button', { name: buttonText })).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: buttonText })
+    ).toBeInTheDocument();
   });
 
   it('クリック時にonClickが呼ばれる', () => {
