@@ -1,17 +1,17 @@
-import { defineConfig } from 'vitest/config';
+import { resolve } from 'node:path';
 import react from '@vitejs/plugin-react';
-import { resolve } from 'path';
+import { defineConfig } from 'vitest/config';
 
 export default defineConfig({
   plugins: [react()],
   test: {
     globals: true,
     exclude: [
-      '**/node_modules/**', 
-      '**/dist/**', 
+      '**/node_modules/**',
+      '**/dist/**',
       '**/e2e/**',
       // Exclude React component tests for now due to jsdom compatibility issues
-      '**/components/**/*.test.{ts,tsx}'
+      '**/components/**/*.test.{ts,tsx}',
     ],
     environment: 'node',
   },

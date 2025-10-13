@@ -1,8 +1,5 @@
 {
-  "packages": [
-    "nodejs@24",
-    "postgresql@17"
-  ],
+  "packages": ["nodejs@24", "postgresql@17"],
   "shell": {
     "init_hook": [
       "echo 'Welcome to TransMenu development environment!'",
@@ -13,5 +10,5 @@
       "echo 'PostgreSQL version:'",
       "postgres --version"
     ]
-  },
+  }
 }
