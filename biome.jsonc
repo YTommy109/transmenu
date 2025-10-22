@@ -1,0 +1,303 @@
+{
+  // Biome設定スキーマ
+  "$schema": "https://biomejs.dev/schemas/2.2.6/schema.json",
+
+  // バージョン管理システム設定（.gitignore読み込みのため有効化）
+  "vcs": {
+    "enabled": true,
+    "clientKind": "git",
+    "useIgnoreFile": true
+  },
+
+  // ファイル処理設定
+  "files": {
+    "ignoreUnknown": false,
+    // 処理対象ファイルの指定
+    "includes": [
+      "src/**/*",
+      "app/**/*",
+      "e2e/**/*",
+      "docs/**/*",
+      "*.ts",
+      "*.tsx",
+      "*.js",
+      "*.jsx",
+      "*.json",
+      "*.jsonc"
+    ]
+  },
+
+  // リンター設定
+  "linter": {
+    "enabled": true,
+    "rules": {
+      // 基本推奨ルールを有効化
+      "recommended": true,
+
+      // 複雑性チェック - コードの複雑さを制御
+      "complexity": {
+        // 不要なBoolean型キャスト（!!value, Boolean(value)）の検出
+        "noExtraBooleanCast": "error",
+        // 無駄なcatch句（エラー再スローのみ）の検出
+        "noUselessCatch": "error",
+        // 無意味なTypeScript型制約の検出
+        "noUselessTypeConstraint": "error",
+        // 無駄な三項演算子（condition ? true : false）の検出
+        "noUselessTernary": "error",
+        // 無駄なcontinue文の検出
+        "noUselessContinue": "error",
+        // 認知的複雑度の高い関数の検出
+        "noExcessiveCognitiveComplexity": {
+          "level": "warn",
+          "options": {
+            "maxAllowedComplexity": 5
+          }
+        }
+      },
+
+      // 正確性チェック - バグの原因となる記述を防止
+      "correctness": {
+        // const変数への代入の検出
+        "noConstAssign": "error",
+        // 常に同じ結果になる条件式（if(true), while(false)）の検出
+        "noConstantCondition": "error",
+        // 空の文字クラス正規表現（/[]/）の検出
+        "noEmptyCharacterClassInRegex": "error",
+        // 空の分割代入パターンの検出
+        "noEmptyPattern": "error",
+        // グローバルオブジェクトを関数として呼び出し（Math(), JSON()）の検出
+        "noGlobalObjectCalls": "error",
+        // 不正なconstructor内でのsuper()呼び出しの検出
+        "noInvalidConstructorSuper": "error",
+        // 8進エスケープシーケンス（\8, \9）の検出
+        "noNonoctalDecimalEscape": "error",
+        // 数値精度を失うリテラル（9007199254740992）の検出
+        "noPrecisionLoss": "error",
+        // 自分自身への代入（x = x）の検出
+        "noSelfAssign": "error",
+        // setterメソッドでのreturn文の検出
+        "noSetterReturn": "error",
+        // switch文内での変数宣言の検出
+        "noSwitchDeclarations": "error",
+        // 未宣言変数の使用の検出
+        "noUndeclaredVariables": "error",
+        // 到達不可能なコードの検出
+        "noUnreachable": "error",
+        // 到達不可能なsuper()呼び出しの検出
+        "noUnreachableSuper": "error",
+        // NaNとの直接比較の検出（isNaN使用を推奨）
+        "useIsNan": "error",
+        // forループの無限ループの検出
+        "useValidForDirection": "error",
+        // generator関数でyieldがない場合の検出
+        "useYield": "error",
+        // 未使用import文の検出
+        "noUnusedImports": "error",
+        // 未使用変数の検出
+        "noUnusedVariables": "error"
+      },
+
+      // スタイルチェック - コード品質とメンテナンス性
+      "style": {
+        // 再代入されないlet変数の検出（const使用を推奨）
+        "useConst": "error",
+        // 文字列連結の検出（テンプレートリテラル使用を推奨）
+        "useTemplate": "error",
+        // ファイル命名規則のチェック
+        "useFilenamingConvention": {
+          "level": "warn",
+          "options": {
+            "strictCase": false,
+            "requireAscii": true
+          }
+        },
+        // 命名規則のチェック
+        "useNamingConvention": {
+          "level": "warn",
+          "options": {
+            "strictCase": false,
+            "conventions": [
+              {
+                "selector": {
+                  "kind": "function"
+                },
+                "formats": ["camelCase", "PascalCase"]
+              },
+              {
+                "selector": {
+                  "kind": "variable"
+                },
+                "formats": ["camelCase", "CONSTANT_CASE"]
+              }
+            ]
+          }
+        },
+        // 配列型記法の一貫性チェック（T[] vs Array<T>）
+        "useConsistentArrayType": "error",
+        // 型のみimportの検出（import type使用を推奨）
+        "useImportType": "error",
+        // 型のみexportの検出（export type使用を推奨）
+        "useExportType": "error",
+        // 数値リテラルでのセパレータ未使用の検出（1_000_000を推奨）
+        "useNumericSeparators": "warn",
+        // Object.assignの使用検出（スプレッド構文を推奨）
+        "useObjectSpread": "error",
+        // 自己終了タグでないJSX要素の検出
+        "useSelfClosingElements": "error"
+      },
+
+      // 疑わしいパターン - 潜在的なバグやアンチパターン
+      "suspicious": {
+        // 配列インデックスをReact keyに使用するパターンの検出
+        "noArrayIndexKey": "warn",
+        // 条件式内での代入演算子の検出
+        "noAssignInExpressions": "error",
+        // Promise executor内でのasync関数の検出
+        "noAsyncPromiseExecutor": "error",
+        // catchパラメータへの代入の検出
+        "noCatchAssign": "error",
+        // クラス名への代入の検出
+        "noClassAssign": "error",
+        // -0との比較の検出（Object.is使用を推奨）
+        "noCompareNegZero": "error",
+        // 正規表現内の制御文字の検出
+        "noControlCharactersInRegex": "error",
+        // debugger文の検出
+        "noDebugger": "warn",
+        // ==演算子の検出（===使用を推奨）
+        "noDoubleEquals": "error",
+        // switch文内の重複caseラベルの検出
+        "noDuplicateCase": "error",
+        // クラス内の重複メンバーの検出
+        "noDuplicateClassMembers": "error",
+        // オブジェクト内の重複キーの検出
+        "noDuplicateObjectKeys": "error",
+        // 関数パラメータの重複名の検出
+        "noDuplicateParameters": "error",
+        // 空のブロック文の検出
+        "noEmptyBlockStatements": "error",
+        // 明示的なany型使用の検出
+        "noExplicitAny": "warn",
+        // 不要な非null断言(!)の検出
+        "noExtraNonNullAssertion": "error",
+        // switch caseでのbreak未記述の検出
+        "noFallthroughSwitchClause": "error",
+        // 関数宣言への代入の検出
+        "noFunctionAssign": "error",
+        // グローバル変数への代入の検出
+        "noGlobalAssign": "error",
+        // importバインディングへの代入の検出
+        "noImportAssign": "error",
+        // 誤解を招く文字クラス正規表現の検出
+        "noMisleadingCharacterClass": "error",
+        // 誤解を招くコンストラクタ使用の検出
+        "noMisleadingInstantiator": "error",
+        // プロトタイプメソッドの直接呼び出しの検出
+        "noPrototypeBuiltins": "error",
+        // 同一スコープ内での変数再宣言の検出
+        "noRedeclare": "error",
+        // 予約語や特殊変数名のシャドウイングの検出
+        "noShadowRestrictedNames": "error",
+        // 危険な型interfaceマージの検出
+        "noUnsafeDeclarationMerging": "error",
+        // 危険な!演算子（!in, !instanceof）の検出
+        "noUnsafeNegation": "error",
+        // return文のないgetterの検出
+        "useGetterReturn": "error",
+        // console文の検出
+        "noConsole": "warn",
+        // コメントテキストの検出（TODO/FIXMEなど）
+        "noCommentText": "warn",
+        // React固有のpropの適切な使用をチェック
+        "noReactSpecificProps": "error"
+      },
+
+      // 推奨パターン - ベストプラクティス
+      "nursery": {
+        // CSSクラス名のソート機能（Tailwind CSS等で有効）
+        "useSortedClasses": "off"
+      },
+
+      // パフォーマンス関連
+      "performance": {
+        // スプレッド演算子の累積使用の検出（パフォーマンス劣化防止）
+        "noAccumulatingSpread": "warn"
+      },
+
+      // セキュリティ関連
+      "security": {
+        // dangerouslySetInnerHTML使用の検出（XSSリスク）
+        "noDangerouslySetInnerHtml": "warn"
+      },
+
+      // アクセシビリティ関連
+      "a11y": {
+        // button要素でのtype属性必須の検出
+        "useButtonType": "error",
+        // img要素でのalt属性必須の検出
+        "useAltText": "error",
+        // アンカータグの適切な使用の検出
+        "useValidAnchor": "error",
+        // html要素でのlang属性必須の検出
+        "useHtmlLang": "error"
+      }
+    }
+  },
+
+  // フォーマッター設定
+  "formatter": {
+    "enabled": true,
+    // エラー時でもフォーマット無効化
+    "formatWithErrors": false,
+    // インデントスタイル（スペース）
+    "indentStyle": "space",
+    // インデント幅（2スペース）
+    "indentWidth": 2,
+    // 行末文字（LF）
+    "lineEnding": "lf",
+    // 行幅制限（80文字）
+    "lineWidth": 80,
+    // HTML/JSX属性の位置
+    "attributePosition": "auto"
+  },
+
+  // JavaScript固有の設定
+  "javascript": {
+    "formatter": {
+      // JSXでのダブルクォート使用
+      "jsxQuoteStyle": "double",
+      // オブジェクトプロパティのクォート（必要時のみ）
+      "quoteProperties": "asNeeded",
+      // ES5互換のトレイリングカンマ
+      "trailingCommas": "es5",
+      // セミコロン必須
+      "semicolons": "always",
+      // アロー関数の括弧（常に使用）
+      "arrowParentheses": "always",
+      // ブレースのスペーシング
+      "bracketSpacing": true,
+      // JSXブレースの同一行配置無効
+      "bracketSameLine": false,
+      // 文字列でのシングルクォート使用
+      "quoteStyle": "single",
+      // 属性位置の自動調整
+      "attributePosition": "auto"
+    }
+  },
+
+  // JSON固有の設定
+  "json": {
+    "formatter": {
+      // インデントスタイル（スペース）
+      "indentStyle": "space",
+      // インデント幅（2スペース）
+      "indentWidth": 2,
+      // 行末文字（LF）
+      "lineEnding": "lf",
+      // 行幅制限（80文字）
+      "lineWidth": 80,
+      // JSONでのトレイリングカンマ無効
+      "trailingCommas": "none"
+    }
+  }
+}
