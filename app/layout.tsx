@@ -1,5 +1,4 @@
 import type { Metadata } from 'next';
-import EmotionCacheProvider from './providers';
 
 export const metadata: Metadata = {
   title: 'TransMenu - Menu Translation App',
@@ -13,9 +12,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body>
-        <EmotionCacheProvider>{children}</EmotionCacheProvider>
-      </body>
+      <body>{children}</body>
     </html>
   );
 }
