@@ -6,14 +6,13 @@ export default defineConfig({
   plugins: [react()],
   test: {
     globals: true,
+    setupFiles: ['./src/test/setup.ts'],
     exclude: [
       '**/node_modules/**',
       '**/dist/**',
       '**/e2e/**',
-      // Exclude React component tests for now due to jsdom compatibility issues
-      '**/components/**/*.test.{ts,tsx}',
     ],
-    environment: 'node',
+    environment: 'jsdom',
   },
   resolve: {
     alias: {
