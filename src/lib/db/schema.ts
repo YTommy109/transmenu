@@ -50,5 +50,6 @@ export const menuPhotos = pgTable("menu_photos", {
 	 */
 	updatedAt: timestamp("updated_at", { withTimezone: true })
 		.notNull()
-		.defaultNow(),
+		.defaultNow()
+		.$onUpdate(() => new Date()),
 });
