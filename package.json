@@ -15,7 +15,11 @@
     "check:fix": "biome check . --write",
     "test": "vitest",
     "test:ui": "vitest --ui",
-    "e2e": "playwright test"
+    "e2e": "playwright test",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "drizzle-kit migrate",
+    "db:push": "drizzle-kit push",
+    "db:studio": "drizzle-kit studio"
   },
   "dependencies": {
     "drizzle-orm": "^0.44.6",
