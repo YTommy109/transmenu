@@ -16,8 +16,13 @@
     "includes": [
       "src/**/*",
       "app/**/*",
+      "it/**/*",
       "e2e/**/*",
       "docs/**/*",
+      "**/*.test.ts",
+      "**/*.test.tsx",
+      "**/*.spec.ts",
+      "**/*.spec.tsx",
       "*.ts",
       "*.tsx",
       "*.js",
@@ -121,13 +126,19 @@
                 "selector": {
                   "kind": "function"
                 },
-                "formats": ["camelCase", "PascalCase"]
+                "formats": ["camelCase", "PascalCase", "CONSTANT_CASE"]
               },
               {
                 "selector": {
                   "kind": "variable"
                 },
-                "formats": ["camelCase", "CONSTANT_CASE"]
+                "formats": ["camelCase", "PascalCase", "CONSTANT_CASE"]
+              },
+              {
+                "selector": {
+                  "kind": "objectLiteralProperty"
+                },
+                "formats": ["camelCase", "PascalCase", "snake_case"]
               }
             ]
           }

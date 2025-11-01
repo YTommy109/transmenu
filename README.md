@@ -32,7 +32,21 @@ devbox shell
 pnpm install
 ```
 
-### 3. 開発サーバーの起動
+### 3. データベースのセットアップ
+
+初回のみデータベースとユーザーを作成する必要があります：
+
+```bash
+# データベースとユーザーを作成
+pnpm db:init
+
+# マイグレーションを実行
+pnpm db:migrate
+```
+
+**注意**: データベースをリセットする場合は `pnpm db:drop` を実行してから再度 `pnpm db:init` を実行してください。
+
+### 4. 開発サーバーの起動
 
 ```bash
 pnpm dev
@@ -81,6 +95,11 @@ pnpm playwright test --ui
 | `pnpm test` | ユニットテストを実行 |
 | `pnpm test:ui` | UIでユニットテストを実行 |
 | `pnpm e2e` | E2Eテストを実行 |
+| `pnpm db:init` | データベースとユーザーを初期化（初回のみ） |
+| `pnpm db:migrate` | データベースマイグレーションを実行 |
+| `pnpm db:generate` | Drizzleスキーマからマイグレーションファイルを生成 |
+| `pnpm db:studio` | Drizzle Studioを起動 |
+| `pnpm db:drop` | データベースとユーザーを削除 |
 
 ## 🏗️ プロジェクト構造
 
@@ -92,6 +111,9 @@ transmenu/
 │   └── providers.tsx      # Emotionキャッシュプロバイダ
 ├── e2e/                   # E2Eテスト
 │   └── hello-world.spec.ts
+├── scripts/               # ユーティリティスクリプト
+│   ├── db-init.sh         # データベース初期化
+│   └── db-drop.sh         # データベース削除
 ├── src/
 │   ├── components/        # Reactコンポーネント
 │   │   ├── Button.tsx
