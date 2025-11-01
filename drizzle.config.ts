@@ -1,4 +1,8 @@
+import { config } from "dotenv";
 import { defineConfig } from "drizzle-kit";
+
+// .env.local を読み込む
+config({ path: ".env.local" });
 
 const databaseUrl = process.env.DATABASE_URL;
 if (!databaseUrl) {
