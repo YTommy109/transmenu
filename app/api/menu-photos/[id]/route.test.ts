@@ -1,5 +1,5 @@
-import { describe, expect, it, vi, beforeEach, afterEach } from 'vitest';
 import type { NextRequest } from 'next/server';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 const mockSelect = vi.fn();
 
@@ -24,10 +24,6 @@ vi.mock('drizzle-orm', () => ({
 describe('GET /api/menu-photos/[id]', () => {
   beforeEach(() => {
     vi.clearAllMocks();
-  });
-
-  afterEach(() => {
-    vi.resetModules();
   });
 
   it('指定されたIDの画像を取得できる', async () => {
@@ -92,7 +88,4 @@ describe('GET /api/menu-photos/[id]', () => {
     expect(response.status).toBe(404);
     expect(data.error).toBe('画像が見つかりません');
   });
-
-
-
 });
