@@ -48,18 +48,9 @@ export function MenuPhotoUpload() {
     setPreviewUrl(url);
   };
 
-  const clearPreview = () => {
-    setSelectedFile(null);
-    if (previewUrl) {
-      URL.revokeObjectURL(previewUrl);
-    }
-    setPreviewUrl(null);
-  };
-
   const uploadFile = async (file: File) => {
     const formData = new FormData();
     formData.append('file', file);
-
     const response = await fetch('/api/menu-photos', {
       method: 'POST',
       body: formData,
@@ -71,9 +62,12 @@ export function MenuPhotoUpload() {
     }
   };
 
-  const handleUploadSuccess = async () => {
-    clearPreview();
-    await fetchPhotos();
+  const clearPreview = () => {
+    setSelectedFile(null);
+    if (previewUrl) {
+      URL.revokeObjectURL(previewUrl);
+      setPreviewUrl(null);
+    }
   };
 
   const handleUploadError = (err: unknown) => {
@@ -92,7 +86,8 @@ export function MenuPhotoUpload() {
 
     try {
       await uploadFile(selectedFile);
-      await handleUploadSuccess();
+      clearPreview();
+      await fetchPhotos();
     } catch (err) {
       handleUploadError(err);
     } finally {

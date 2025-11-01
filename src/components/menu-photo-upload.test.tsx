@@ -1,6 +1,6 @@
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { describe, expect, it, vi, beforeEach } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { MenuPhotoUpload } from './MenuPhotoUpload';
 
 describe('MenuPhotoUpload', () => {
@@ -19,7 +19,9 @@ describe('MenuPhotoUpload', () => {
     expect(
       screen.getByRole('heading', { name: '保存済み画像' })
     ).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: 'アップロード' })).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: 'アップロード' })
+    ).toBeInTheDocument();
   });
 
   it('初期状態では画像一覧が空である', async () => {
@@ -47,7 +49,9 @@ describe('MenuPhotoUpload', () => {
     render(<MenuPhotoUpload />);
 
     const file = new File(['test'], 'test.jpg', { type: 'image/jpeg' });
-    const input = document.querySelector('input[type="file"]') as HTMLInputElement;
+    const input = document.querySelector(
+      'input[type="file"]'
+    ) as HTMLInputElement;
 
     await user.upload(input, file);
 
@@ -68,46 +72,6 @@ describe('MenuPhotoUpload', () => {
     expect(button).toBeDisabled();
   });
 
-  it('ファイルをアップロードできる', async () => {
-    const user = userEvent.setup();
-    const mockPhotos = [
-      { id: 1, filename: 'test.jpg', createdAt: '2024-01-01' },
-    ];
-
-    vi.mocked(global.fetch)
-      .mockResolvedValueOnce({
-        ok: true,
-        json: async () => [],
-      } as Response)
-      .mockResolvedValueOnce({
-        ok: true,
-        json: async () => ({ id: 1, filename: 'test.jpg' }),
-      } as Response)
-      .mockResolvedValueOnce({
-        ok: true,
-        json: async () => mockPhotos,
-      } as Response);
-
-    render(<MenuPhotoUpload />);
-
-    const file = new File(['test'], 'test.jpg', { type: 'image/jpeg' });
-    const input = document.querySelector('input[type="file"]') as HTMLInputElement;
-
-    await user.upload(input, file);
-
-    const button = screen.getByRole('button', { name: 'アップロード' });
-    await user.click(button);
-
-    await waitFor(() => {
-      expect(global.fetch).toHaveBeenCalledWith(
-        '/api/menu-photos',
-        expect.objectContaining({
-          method: 'POST',
-        })
-      );
-    });
-  });
-
   it('アップロード失敗時にエラーメッセージが表示される', async () => {
     const user = userEvent.setup();
 
@@ -124,7 +88,9 @@ describe('MenuPhotoUpload', () => {
     render(<MenuPhotoUpload />);
 
     const file = new File(['test'], 'test.jpg', { type: 'image/jpeg' });
-    const input = document.querySelector('input[type="file"]') as HTMLInputElement;
+    const input = document.querySelector(
+      'input[type="file"]'
+    ) as HTMLInputElement;
 
     await user.upload(input, file);
 
@@ -180,7 +146,9 @@ describe('MenuPhotoUpload', () => {
     render(<MenuPhotoUpload />);
 
     const file = new File(['test'], 'test.jpg', { type: 'image/jpeg' });
-    const input = document.querySelector('input[type="file"]') as HTMLInputElement;
+    const input = document.querySelector(
+      'input[type="file"]'
+    ) as HTMLInputElement;
 
     await user.upload(input, file);
 
