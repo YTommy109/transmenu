@@ -2,6 +2,7 @@
 'use client';
 
 import { css } from '@emotion/react';
+import Image from 'next/image';
 import { useCallback, useEffect, useState } from 'react';
 
 type MenuPhoto = {
@@ -47,6 +48,39 @@ export function MenuPhotoUpload() {
     setPreviewUrl(url);
   };
 
+  const clearPreview = () => {
+    setSelectedFile(null);
+    if (previewUrl) {
+      URL.revokeObjectURL(previewUrl);
+    }
+    setPreviewUrl(null);
+  };
+
+  const uploadFile = async (file: File) => {
+    const formData = new FormData();
+    formData.append('file', file);
+
+    const response = await fetch('/api/menu-photos', {
+      method: 'POST',
+      body: formData,
+    });
+
+    if (!response.ok) {
+      const data = await response.json();
+      throw new Error(data.error || 'アップロードに失敗しました');
+    }
+  };
+
+  const handleUploadSuccess = async () => {
+    clearPreview();
+    await fetchPhotos();
+  };
+
+  const handleUploadError = (err: unknown) => {
+    const message = err instanceof Error ? err.message : 'エラーが発生しました';
+    setError(message);
+  };
+
   const handleUpload = async () => {
     if (!selectedFile) {
       setError('ファイルを選択してください');
@@ -57,30 +91,10 @@ export function MenuPhotoUpload() {
     setError(null);
 
     try {
-      const formData = new FormData();
-      formData.append('file', selectedFile);
-
-      const response = await fetch('/api/menu-photos', {
-        method: 'POST',
-        body: formData,
-      });
-
-      if (!response.ok) {
-        const data = await response.json();
-        throw new Error(data.error || 'アップロードに失敗しました');
-      }
-
-      // アップロード成功後、プレビューをクリア
-      setSelectedFile(null);
-      if (previewUrl) {
-        URL.revokeObjectURL(previewUrl);
-      }
-      setPreviewUrl(null);
-
-      // 画像一覧を再取得
-      await fetchPhotos();
+      await uploadFile(selectedFile);
+      await handleUploadSuccess();
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'エラーが発生しました');
+      handleUploadError(err);
     } finally {
       setUploading(false);
     }
@@ -101,8 +115,15 @@ export function MenuPhotoUpload() {
 
         {previewUrl && (
           <div css={previewContainerStyle}>
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={previewUrl} alt="プレビュー" css={previewImageStyle} />
+            <div css={previewImageWrapperStyle}>
+              <Image
+                src={previewUrl}
+                alt="プレビュー"
+                fill
+                style={{ objectFit: 'contain' }}
+                unoptimized
+              />
+            </div>
           </div>
         )}
 
@@ -126,12 +147,15 @@ export function MenuPhotoUpload() {
           <div css={photoGridStyle}>
             {photos.map((photo) => (
               <div key={photo.id} css={photoItemStyle}>
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={`/api/menu-photos/${photo.id}`}
-                  alt={photo.filename}
-                  css={thumbnailStyle}
-                />
+                <div css={thumbnailWrapperStyle}>
+                  <Image
+                    src={`/api/menu-photos/${photo.id}`}
+                    alt={photo.filename}
+                    fill
+                    style={{ objectFit: 'cover' }}
+                    unoptimized
+                  />
+                </div>
                 <p css={filenameStyle}>{photo.filename}</p>
               </div>
             ))}
@@ -173,11 +197,13 @@ const previewContainerStyle = css`
 	margin-bottom: 16px;
 `;
 
-const previewImageStyle = css`
-	max-width: 100%;
-	max-height: 300px;
+const previewImageWrapperStyle = css`
+	position: relative;
+	width: 100%;
+	height: 300px;
 	border-radius: 4px;
 	border: 1px solid #ddd;
+	overflow: hidden;
 `;
 
 const errorStyle = css`
@@ -232,12 +258,13 @@ const photoItemStyle = css`
 	background-color: white;
 `;
 
-const thumbnailStyle = css`
+const thumbnailWrapperStyle = css`
+	position: relative;
 	width: 100%;
 	height: 150px;
-	object-fit: cover;
 	border-radius: 4px;
 	margin-bottom: 8px;
+	overflow: hidden;
 `;
 
 const filenameStyle = css`
