@@ -16,8 +16,13 @@
     "includes": [
       "src/**/*",
       "app/**/*",
+      "it/**/*",
       "e2e/**/*",
       "docs/**/*",
+      "**/*.test.ts",
+      "**/*.test.tsx",
+      "**/*.spec.ts",
+      "**/*.spec.tsx",
       "*.ts",
       "*.tsx",
       "*.js",
