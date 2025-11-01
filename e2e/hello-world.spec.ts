@@ -31,7 +31,9 @@ test('AI応答エリアが表示される', async ({ page }) => {
   await page.goto('/');
 
   // Then
-  const responseArea = page.locator('div').filter({ hasText: /AI が応答を生成中です/ });
+  const responseArea = page
+    .locator('div')
+    .filter({ hasText: /AI が応答を生成中です/ });
   await expect(responseArea).toBeVisible();
 });
 

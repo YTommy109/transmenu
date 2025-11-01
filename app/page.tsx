@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { MenuPhotoUpload } from '@/components/MenuPhotoUpload';
 
 export default function Home() {
   const [reply, setReply] = useState<string | null>(null);
@@ -100,6 +101,10 @@ export default function Home() {
             AI からの応答がここに表示されます
           </p>
         )}
+      </div>
+
+      <div style={{ marginTop: '3rem', width: '100%', maxWidth: '800px' }}>
+        <MenuPhotoUpload />
       </div>
     </main>
   );

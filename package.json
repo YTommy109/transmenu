@@ -24,6 +24,8 @@
     "db:drop": "./scripts/db-drop.sh"
   },
   "dependencies": {
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.1",
     "drizzle-orm": "^0.44.6",
     "next": "15.5.6",
     "openai": "^6.5.0",
