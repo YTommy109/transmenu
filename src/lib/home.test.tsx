@@ -1,5 +1,5 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { render, screen, waitFor } from '@testing-library/react';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import Home from '../../app/page';
 
 // fetch をモック
@@ -17,10 +17,11 @@ describe('Home Page', () => {
 
   it('初期状態でローディング表示される', () => {
     // Arrange
-    mockFetch.mockImplementation(() => 
-      new Promise(() => {
-        // Never resolves - for testing loading state
-      })
+    mockFetch.mockImplementation(
+      () =>
+        new Promise(() => {
+          // Never resolves - for testing loading state
+        })
     );
 
     // Act
@@ -57,7 +58,9 @@ describe('Home Page', () => {
 
     // Assert
     await waitFor(() => {
-      expect(screen.getByText('Error: Failed to get response from AI')).toBeInTheDocument();
+      expect(
+        screen.getByText('Error: Failed to get response from AI')
+      ).toBeInTheDocument();
     });
   });
 
