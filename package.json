@@ -37,6 +37,7 @@
   },
   "devDependencies": {
     "@biomejs/biome": "^2.2.6",
+    "@fission-ai/openspec": "^1.0.2",
     "@playwright/test": "^1.56.1",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.0",
