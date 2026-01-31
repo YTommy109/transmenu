@@ -17,6 +17,11 @@ export function MenuPhotoUpload() {
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [photos, setPhotos] = useState<MenuPhoto[]>([]);
+  // OCR関連の状態
+  const [extractedText, setExtractedText] = useState<string | null>(null);
+  const [processingOcr, setProcessingOcr] = useState(false);
+  const [ocrError, setOcrError] = useState<string | null>(null);
+  const [selectedPhotoId, setSelectedPhotoId] = useState<number | null>(null);
 
   // 画像一覧を取得
   const fetchPhotos = useCallback(async () => {
@@ -95,6 +100,38 @@ export function MenuPhotoUpload() {
     }
   };
 
+  // OCR処理を実行する関数
+  const handleOcr = async (photoId: number) => {
+    setProcessingOcr(true);
+    setOcrError(null);
+    setExtractedText(null);
+    setSelectedPhotoId(photoId);
+
+    try {
+      const response = await fetch('/api/ocr', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ imageId: photoId }),
+      });
+
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.error || 'OCR処理に失敗しました');
+      }
+
+      const data = await response.json();
+      setExtractedText(data.text || 'テキストを抽出できませんでした');
+    } catch (err) {
+      const message =
+        err instanceof Error ? err.message : 'OCR処理中にエラーが発生しました';
+      setOcrError(message);
+    } finally {
+      setProcessingOcr(false);
+    }
+  };
+
   return (
     <div css={containerStyle}>
       <div css={uploadSectionStyle}>
@@ -152,11 +189,34 @@ export function MenuPhotoUpload() {
                   />
                 </div>
                 <p css={filenameStyle}>{photo.filename}</p>
+                <button
+                  type="button"
+                  onClick={() => handleOcr(photo.id)}
+                  disabled={processingOcr}
+                  css={ocrButtonStyle}
+                >
+                  {processingOcr && selectedPhotoId === photo.id
+                    ? '処理中...'
+                    : 'OCR'}
+                </button>
               </div>
             ))}
           </div>
         )}
       </div>
+
+      {extractedText && (
+        <div css={extractedTextSectionStyle}>
+          <h2 css={titleStyle}>抽出されたテキスト</h2>
+          <textarea
+            readOnly
+            value={extractedText}
+            css={extractedTextAreaStyle}
+          />
+        </div>
+      )}
+
+      {ocrError && <div css={errorStyle}>{ocrError}</div>}
     </div>
   );
 }
@@ -268,4 +328,45 @@ const filenameStyle = css`
 	overflow: hidden;
 	text-overflow: ellipsis;
 	white-space: nowrap;
+	margin-bottom: 8px;
+`;
+
+const ocrButtonStyle = css`
+	padding: 6px 12px;
+	background-color: #1976d2;
+	color: white;
+	border: none;
+	border-radius: 4px;
+	font-size: 0.875rem;
+	cursor: pointer;
+	width: 100%;
+
+	&:hover:not(:disabled) {
+		background-color: #1565c0;
+	}
+
+	&:disabled {
+		background-color: #ccc;
+		cursor: not-allowed;
+	}
+`;
+
+const extractedTextSectionStyle = css`
+	margin-top: 40px;
+	padding: 20px;
+	border: 1px solid #ddd;
+	border-radius: 8px;
+	background-color: #f9f9f9;
+`;
+
+const extractedTextAreaStyle = css`
+	width: 100%;
+	min-height: 200px;
+	padding: 12px;
+	border: 1px solid #ddd;
+	border-radius: 4px;
+	font-size: 0.875rem;
+	font-family: monospace;
+	resize: vertical;
+	background-color: white;
 `;

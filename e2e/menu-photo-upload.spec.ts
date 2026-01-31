@@ -129,4 +129,46 @@ test.describe('メニュー写真アップロード機能', () => {
       timeout: 10_000,
     });
   });
+
+  test('OCRボタンのクリックからテキスト抽出までのフロー', async ({
+    page,
+  }) => {
+    // Given: 画像をアップロード
+    await page.goto('/');
+    const fileInput = page.locator('input[type="file"]');
+    const buffer = createTestImageBuffer();
+
+    await fileInput.setInputFiles({
+      name: 'ocr-test.png',
+      mimeType: 'image/png',
+      buffer,
+    });
+
+    const uploadButton = page.getByRole('button', { name: 'アップロード' });
+    await uploadButton.click();
+
+    // アップロード完了を待つ
+    await expect(page.getByText('ocr-test.png').first()).toBeVisible({
+      timeout: 10_000,
+    });
+
+    // When: OCRボタンをクリック
+    const ocrButton = page.getByRole('button', { name: 'OCR' }).first();
+    await expect(ocrButton).toBeVisible();
+    await ocrButton.click();
+
+    // Then: 処理中の表示
+    await expect(
+      page.getByRole('button', { name: '処理中...' }).first()
+    ).toBeVisible({ timeout: 5000 });
+
+    // Then: 抽出されたテキストが表示される（またはエラーメッセージ）
+    // 注意: OpenAI APIのモックがないため、実際のAPI呼び出しが発生する可能性がある
+    // タイムアウトを長めに設定
+    await expect(
+      page.getByRole('heading', { name: '抽出されたテキスト' }).or(
+        page.getByText(/OCR処理中にエラー/)
+      )
+    ).toBeVisible({ timeout: 30_000 });
+  });
 });

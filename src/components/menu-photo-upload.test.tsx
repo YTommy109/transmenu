@@ -159,4 +159,125 @@ describe('MenuPhotoUpload', () => {
       screen.getByRole('button', { name: 'アップロード中...' })
     ).toBeDisabled();
   });
+
+  it('OCRボタンが各アップロード済み画像に表示される', async () => {
+    const mockPhotos = [
+      { id: 1, filename: 'photo1.jpg', createdAt: '2024-01-01' },
+      { id: 2, filename: 'photo2.jpg', createdAt: '2024-01-02' },
+    ];
+
+    vi.mocked(global.fetch).mockResolvedValueOnce({
+      ok: true,
+      json: async () => mockPhotos,
+    } as Response);
+
+    render(<MenuPhotoUpload />);
+
+    await waitFor(() => {
+      const ocrButtons = screen.getAllByRole('button', { name: 'OCR' });
+      expect(ocrButtons).toHaveLength(2);
+    });
+  });
+
+  it('OCRボタンをクリックするとOCR処理が実行される', async () => {
+    const user = userEvent.setup();
+    const mockPhotos = [
+      { id: 1, filename: 'photo1.jpg', createdAt: '2024-01-01' },
+    ];
+
+    vi.mocked(global.fetch)
+      .mockResolvedValueOnce({
+        ok: true,
+        json: async () => mockPhotos,
+      } as Response)
+      .mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({ text: '抽出されたテキスト' }),
+      } as Response);
+
+    render(<MenuPhotoUpload />);
+
+    await waitFor(() => {
+      expect(screen.getByText('photo1.jpg')).toBeInTheDocument();
+    });
+
+    const ocrButton = screen.getByRole('button', { name: 'OCR' });
+    await user.click(ocrButton);
+
+    await waitFor(() => {
+      expect(
+        screen.getByRole('heading', { name: '抽出されたテキスト' })
+      ).toBeInTheDocument();
+      expect(screen.getByDisplayValue('抽出されたテキスト')).toBeInTheDocument();
+    });
+  });
+
+  it('OCR処理中はボタンが無効化され、処理中...と表示される', async () => {
+    const user = userEvent.setup();
+    const mockPhotos = [
+      { id: 1, filename: 'photo1.jpg', createdAt: '2024-01-01' },
+    ];
+
+    vi.mocked(global.fetch)
+      .mockResolvedValueOnce({
+        ok: true,
+        json: async () => mockPhotos,
+      } as Response)
+      .mockImplementationOnce(
+        () =>
+          new Promise((resolve) => {
+            setTimeout(() => {
+              resolve({
+                ok: true,
+                json: async () => ({ text: '抽出されたテキスト' }),
+              } as Response);
+            }, 100);
+          })
+      );
+
+    render(<MenuPhotoUpload />);
+
+    await waitFor(() => {
+      expect(screen.getByText('photo1.jpg')).toBeInTheDocument();
+    });
+
+    const ocrButton = screen.getByRole('button', { name: 'OCR' });
+    await user.click(ocrButton);
+
+    expect(
+      screen.getByRole('button', { name: '処理中...' })
+    ).toBeDisabled();
+  });
+
+  it('OCR処理失敗時にエラーメッセージが表示される', async () => {
+    const user = userEvent.setup();
+    const mockPhotos = [
+      { id: 1, filename: 'photo1.jpg', createdAt: '2024-01-01' },
+    ];
+
+    vi.mocked(global.fetch)
+      .mockResolvedValueOnce({
+        ok: true,
+        json: async () => mockPhotos,
+      } as Response)
+      .mockResolvedValueOnce({
+        ok: false,
+        json: async () => ({ error: 'OCR処理に失敗しました' }),
+      } as Response);
+
+    render(<MenuPhotoUpload />);
+
+    await waitFor(() => {
+      expect(screen.getByText('photo1.jpg')).toBeInTheDocument();
+    });
+
+    const ocrButton = screen.getByRole('button', { name: 'OCR' });
+    await user.click(ocrButton);
+
+    await waitFor(() => {
+      expect(
+        screen.getByText('OCR処理に失敗しました')
+      ).toBeInTheDocument();
+    });
+  });
 });
